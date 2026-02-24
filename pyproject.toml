@@ -1,0 +1,18 @@
+[project]
+name = "learningos-mcp"
+version = "0.1.0"
+description = "FastMCP server bridging Claude and a master knowledge graph on Google Drive"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "mcp[cli]>=1.2.0",
+    "google-api-python-client>=2.150.0",
+    "google-auth>=2.36.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project.scripts]
+learningos-mcp = "learningos_mcp.server:main"
