@@ -12,9 +12,6 @@ build/
 venv/
 env/
 
-# uv
-uv.lock
-
 # IDE
 .vscode/
 .idea/
@@ -23,7 +20,6 @@ uv.lock
 
 # Environment variables
 .env
-.env.*
 
 # OS
 Thumbs.db

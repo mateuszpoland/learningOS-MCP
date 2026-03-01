@@ -1,37 +1,49 @@
-# ROLE: LEAD SYSTEMS ARCHITECT (LEARNING-OS INFRASTRUCTURE)
+# learningOS-MCP
 
-## PROJECT GOAL
-Develop, containerize, and deploy a Python-based FastMCP server to GCP Cloud Run. 
-This server is the bridge between Claude (Desktop/IDE/Colab) and the 'master_knowledge_graph.md' stored on Google Drive.
+FastMCP server that bridges Claude (Desktop / IDE / Colab) with a `master_knowledge_graph.md` file stored on Google Drive. Deployed to GCP Cloud Run with scale-to-zero.
 
-## CORE ARCHITECTURE
-- Framework: FastMCP (SSE transport for Cloud Run compatibility).
-- Storage: Google Drive API (Headless access via Service Account).
-- Deployment: GCP Cloud Run (Scale-to-zero).
-- Identity: OIDC/IAM restricted.
+## Prerequisites
 
-## DEFINITION OF DONE
-1. Server is live on Cloud Run.
-2. Tool 'get_learning_context' successfully reads from Google Drive.
-3. Tool 'update_learning_map' successfully appends data to Google Drive.
-4. CLI 'gcloud run services proxy' allows local Claude to call the remote server.
+| Tool | Purpose |
+|---|---|
+| [uv](https://docs.astral.sh/uv/) | Python package & project manager |
+| [gcloud CLI](https://cloud.google.com/sdk/docs/install) | Deploy to Cloud Run, proxy tunnelling, logs |
+| [Docker](https://docs.docker.com/get-docker/) | Local container builds (optional — Cloud Run builds from source) |
 
-## CONSTRAINTS
-- Use 'uv' for dependency management.
-- All MCP tool calls in the conversation must be COMMENTED OUT until deployment is verified.
-- Error handling must account for Google API rate limits and file lock contention.
+## Setup
 
+```bash
+# 1. Install dependencies
+uv sync
 
-## DEPLOYMENT with ADC (Application Default Credentials)
-1. Enable APIs in GCloud: 
-1. Create GCloud Service Account
-2. Install (on Linux distros) gcloud 
-3. Authenticate from your local machine to gcloud to be able to push app to the GCP
+# 2. Copy env template and fill in your values
+cp .env.example .env
 
+# 3. Authenticate with GCP
+gcloud auth login
+gcloud auth application-default login
 ```
-gcloud run deploy learning-mcp \
-  --source . \
-  --no-allow-unauthenticated \
-  --service-account [YOUR_SERVICE_ACCOUNT_EMAIL] \
-  --region [YOUR_REGION]
+
+## Environment variables
+
+See `.env.example`:
+
+| Variable | Description |
+|---|---|
+| `GCLOUD_PROJECT_ID` | GCP project ID |
+| `SERVICE_ACCOUNT` | Service-account email bound to the Cloud Run revision |
+| `GDRIVE_FOLDER_ID` | Google Drive folder containing the knowledge graph |
+| `GDRIVE_FILE_ID` | File ID of `master_knowledge_graph.md` |
+
+## Deploy
+
+```bash
+make deploy
+```
+
+## Useful commands
+
+```bash
+make logs    # tail Cloud Run logs
+make proxy   # tunnel Cloud Run service to localhost:8080
 ```

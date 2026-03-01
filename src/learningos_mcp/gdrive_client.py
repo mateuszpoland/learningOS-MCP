@@ -18,8 +18,9 @@ import logging
 import time
 from typing import Optional
 
-from googleapiclient.discovery import build, Resource, MediaIoBaseDownload, MediaIoBaseUpload
+from googleapiclient.discovery import build, Resource
 from googleapiclient.errors import HttpError
+from googleapiclient.http import MediaIoBaseDownload, MediaIoBaseUpload
 
 from learningos_mcp.auth import build_credentials
 import os
@@ -88,8 +89,8 @@ class GDriveManager:
     def __init__(self) -> None:
         creds = build_credentials()
         self._service: Resource = build("drive", "v3", credentials=creds)
-        self.folder_id: str = os.getenv("GOOGLE_DRIVE_FOLDER_ID")
-        self.file_id = self.find_master_knowledge_graph()
+        self.folder_id: str = os.getenv("GDRIVE_FOLDER_ID")
+        self.file_id: str = os.getenv("GDRIVE_FILE_ID") or self._find_master_knowledge_graph()
         logger.info("GDriveManager initialised (Drive API v3)")
 
     @classmethod
