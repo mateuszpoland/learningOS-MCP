@@ -20,3 +20,18 @@ This server is the bridge between Claude (Desktop/IDE/Colab) and the 'master_kno
 - Use 'uv' for dependency management.
 - All MCP tool calls in the conversation must be COMMENTED OUT until deployment is verified.
 - Error handling must account for Google API rate limits and file lock contention.
+
+
+## DEPLOYMENT with ADC (Application Default Credentials)
+1. Enable APIs in GCloud: 
+1. Create GCloud Service Account
+2. Install (on Linux distros) gcloud 
+3. Authenticate from your local machine to gcloud to be able to push app to the GCP
+
+```
+gcloud run deploy learning-mcp \
+  --source . \
+  --no-allow-unauthenticated \
+  --service-account [YOUR_SERVICE_ACCOUNT_EMAIL] \
+  --region [YOUR_REGION]
+```
